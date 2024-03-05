@@ -367,6 +367,12 @@ export abstract class DisplayScatter {
     link.click();
   }
 
+  public clickButtonAction() {
+
+    this.orbitControls.enabled = false;
+    this.selectionHelper.disable();
+  }
+
   private addAxisSegments() {
     const axisLinesGeometry = new THREE.BufferGeometry();
     const axisLinesMaterial = new THREE.LineBasicMaterial({
