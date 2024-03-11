@@ -8,6 +8,7 @@ import { AxisLabel } from "./axis_label";
 import { ScatterControls } from "./controls";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import "./style.css";
+import Shiny from "shiny";
 
 import wasmSimdPath from "../../node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm-simd.wasm";
 import wasmSimdThreadedPath from "../../node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm-threaded-simd.wasm";
@@ -125,9 +126,15 @@ export abstract class DisplayScatter {
 
     if (this.hasPointLabels) {
       this.addToolTip();
-      this.canvas.addEventListener("mousemove", (event: MouseEvent) =>
-        this.setTooltipFromHover(event)
-      );
+      this.canvas.addEventListener("mousemove", (event: MouseEvent) => {
+        this.setTooltipFromHover(event);
+      });
+      this.canvas.addEventListener("click", (event: PointerEvent) => {
+        const clickId = this.getIdfromClick(event);
+        if (window.Shiny != null) {
+          window.Shiny.setInputValue("detour_click", clickId);
+        }
+      });
     }
 
     const pointsGeometry = new THREE.BufferGeometry();
@@ -357,6 +364,11 @@ export abstract class DisplayScatter {
     document.body.appendChild(link); // Required for FF
 
     link.click();
+  }
+
+  public clickButtonAction() {
+    this.orbitControls.enabled = false;
+    this.selectionHelper.disable();
   }
 
   private addAxisSegments() {
@@ -717,6 +729,45 @@ export abstract class DisplayScatter {
       span.innerHTML = `${this.mapping.label[id - 1]}`;
     } else {
       this.toolTip.className = "detourrTooltip";
+    }
+  }
+  private getCoordsfromClick(
+    event: PointerEvent,
+    canvas: HTMLCanvasElement,
+    dpr: number
+  ) {
+    const canvas_coords = canvas.getBoundingClientRect();
+    const x = (event.x - canvas_coords.left) * dpr * this.scaleX();
+    const y = (event.y - canvas_coords.top) * dpr * this.scaleY();
+    const width = 1;
+    const height = 1;
+    return { x: x, y: y, width: width, height: height };
+  }
+
+  private getIdfromClick(event: PointerEvent): number {
+    const { pickingTexture, renderer, canvas } = this;
+    const dpr = renderer.getPixelRatio();
+    const { x, y, width, height } = this.getCoordsfromClick(event, canvas, dpr);
+    const pixelBuffer = new Uint8Array(12);
+
+    renderer.readRenderTargetPixels(
+      pickingTexture,
+      x,
+      pickingTexture.height - y,
+      width,
+      height,
+      pixelBuffer
+    );
+
+    const id = (pixelBuffer[0] << 16) | (pixelBuffer[1] << 8) | pixelBuffer[2];
+    if (
+      id != 0 &&
+      id != this.backgroundColour &&
+      this.filteredPointIndices.includes(id - 1)
+    ) {
+      return id;
+    } else {
+      return null;
     }
   }
 
