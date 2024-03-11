@@ -5,7 +5,7 @@ import {
   panIcon,
   resetIcon,
   selectIcon,
-  clickIcon
+  clickIcon,
 } from "./icons";
 import { Color } from "three";
 
@@ -86,8 +86,8 @@ export class ScatterControls {
           }
         )
       : null;
-    
-    this.clickButton = this.widget.clickButtonAction 
+
+    this.clickButton = this.widget.clickButtonAction
       ? this.createButton(
           "clickButton",
           "Switch to point selection mode",

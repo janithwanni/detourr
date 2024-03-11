@@ -127,15 +127,15 @@ export abstract class DisplayScatter {
     if (this.hasPointLabels) {
       this.addToolTip();
       this.canvas.addEventListener("mousemove", (event: MouseEvent) => {
-          this.setTooltipFromHover(event);
-        });
+        this.setTooltipFromHover(event);
+      });
       this.canvas.addEventListener("click", (event: PointerEvent) => {
         const clickId = this.getIdfromClick(event);
         console.log(clickId);
-        if(window.Shiny != null) {
+        if (window.Shiny != null) {
           window.Shiny.setInputValue("detour_click", clickId);
         }
-      })
+      });
     }
 
     const pointsGeometry = new THREE.BufferGeometry();
@@ -368,7 +368,6 @@ export abstract class DisplayScatter {
   }
 
   public clickButtonAction() {
-
     this.orbitControls.enabled = false;
     this.selectionHelper.disable();
   }
@@ -733,16 +732,20 @@ export abstract class DisplayScatter {
       this.toolTip.className = "detourrTooltip";
     }
   }
-  private getCoordsfromClick(event: PointerEvent, canvas: HTMLCanvasElement, dpr: number) {
+  private getCoordsfromClick(
+    event: PointerEvent,
+    canvas: HTMLCanvasElement,
+    dpr: number
+  ) {
     const canvas_coords = canvas.getBoundingClientRect();
     const x = (event.x - canvas_coords.left) * dpr * this.scaleX();
     const y = (event.y - canvas_coords.top) * dpr * this.scaleY();
     const width = 1;
     const height = 1;
-    return {x: x, y: y, width: width, height: height};
+    return { x: x, y: y, width: width, height: height };
   }
 
-  private getIdfromClick(event: PointerEvent) : number {
+  private getIdfromClick(event: PointerEvent): number {
     const { pickingTexture, renderer, canvas } = this;
     const dpr = renderer.getPixelRatio();
     const { x, y, width, height } = this.getCoordsfromClick(event, canvas, dpr);
@@ -763,11 +766,10 @@ export abstract class DisplayScatter {
       id != this.backgroundColour &&
       this.filteredPointIndices.includes(id - 1)
     ) {
-      return(id);
+      return id;
     } else {
-      return(null);
+      return null;
     }
-    
   }
 
   // TODO: break away chunks in to separate functions
