@@ -776,6 +776,7 @@ export abstract class DisplayScatter {
 
     const selectedPointSet = new Set<number>();
     let id;
+    console.log(pixelBuffer);
     for (let i = 0; i < width * height; i++) {
       id =
         (pixelBuffer[4 * i] << 16) |
@@ -786,9 +787,11 @@ export abstract class DisplayScatter {
         id != this.backgroundColour &&
         this.filteredPointIndices.includes(id - 1)
       ) {
+        console.log(id);
         selectedPointSet.add(id - 1);
       }
     }
+    console.log(selectedPointSet)
 
     if (shiftKey) {
       this.selectedPointIndices.map((v) => selectedPointSet.add(v));
