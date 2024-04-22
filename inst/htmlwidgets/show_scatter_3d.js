@@ -21,12 +21,23 @@ if(HTMLWidgets.shinyMode) {
   Shiny.addCustomMessageHandler("add-points", function(x) {
     var widget = HTMLWidgets.find(`#${x.id}`);
     var scatter = widget.s;
-    scatter.addPoints(x.data)
+    scatter.addPoints(
+      x.data,
+      x.config.color,
+      x.config.size,
+      x.config.alpha
+    );
   })
 
   Shiny.addCustomMessageHandler("add-edges", function(x) {
     var widget = HTMLWidgets.find(`#${x.id}`);
     var scatter = widget.s;
-    scatter.addEdges(x.edges);
+    scatter.addEdges(x.edges, x.config.color);
+  })
+
+  Shiny.addCustomMessageHandler("highlight-points", function(x) {
+    var widget = HTMLWidgets.find(`#${x.id}`);
+    var scatter = widget.s;
+    scatter.highlightPoints(x.point_list.map(x => x - 1)); // adjusting for 0-indexing
   })
 }

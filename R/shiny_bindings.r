@@ -88,7 +88,15 @@ display_scatter_proxy <- function(id, session = shiny::getDefaultReactiveDomain(
 #'  `1 / max(sqrt(rowSums(scale(<original_dataset>)^2)))`
 #' @rdname detour-shiny
 #' @export
-add_points <- function(proxy, data, scale_attr = NULL, scale_factor = NULL) {
+add_points <- function(
+  proxy,
+  data,
+  scale_attr = NULL,
+  scale_factor = NULL,
+  colour = "black",
+  size =  1,
+  alpha = 1
+) {
   data <- unname(as.matrix(data)) |> 
     scale(
       center = scale_attr[["scaled:center"]],
@@ -97,9 +105,15 @@ add_points <- function(proxy, data, scale_attr = NULL, scale_factor = NULL) {
   data <- data * scale_factor
   message <- list(
     id = proxy$id,
-    data = apply(data, 1, as.list)
+    data = apply(data, 1, as.list),
+    config = list(
+      colour = colour,
+      size = size,
+      alpha = alpha
+    )
   )
-  proxy$session$sendCustomMessage("add-points", message)
+  proxy$message <- message
+  proxy$session$sendCustomMessage("add-points", proxy$message)
   return(proxy)
 }
 
@@ -114,9 +128,43 @@ add_points <- function(proxy, data, scale_attr = NULL, scale_factor = NULL) {
 #' @export
 add_edges <- function(proxy, edge_list) {
   edge_list <- edge_list |> as.matrix() |> unname()
-  message <- list(
-    id = proxy$id,
-    edges = apply(edge_list, 1, as.list)
-  )
-  proxy$session$sendCustomMessage("add-edges", message)
+  edges <- apply(edge_list, 1, as.list)
+  if (!is.null(proxy$message)) {
+    proxy$message$edges <- edges
+  }
+  proxy$session$sendCustomMessage("add-edges", proxy$message)
+  return(proxy)
+}
+
+#' Function to highlight a given set of points
+#'
+#' The given points will have the original opacity while the other points
+#' will have reduced opacity
+#'
+#' @param proxy proxy object created by \code{\link{display_scatter_proxy}}
+#' @param point_list Numeric vector. indexes to highlight in the prinary dataset
+#' @param alpha The transparency value of the points outside of the point_list
+#'
+#' @export
+highlight_points <- function(proxy, point_list, alpha = 0.3) {
+  proxy$message$point_list <- point_list
+  proxy$session$sendCustomMessage("highlight-points", proxy$message)
+  return(proxy)
+}
+
+#' Function to enlarge a given set of points
+#'
+#' The given points will have a larger size while the rest
+#' remains the same
+#'
+#' @param proxy proxy object created by \code{\link{display_scatter_proxy}}
+#' @param point_list Numeric vector. indexes to enlarge in the prinary dataset
+#' @param shape the size of the points to be enlarged
+#'
+#' @export
+enlarge_points <- function(proxy, point_list, size = 2) {
+  print(point_list)
+  proxy$message$enlarge_point_list <- point_list
+  proxy$message$size <- size
+  proxy$session$sendCustomMessage("enlarge-points", proxy$message)
 }

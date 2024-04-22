@@ -19,16 +19,33 @@ HTMLWidgets.widget({
 if(HTMLWidgets.shinyMode) {
   // register shiny callbacks
   Shiny.addCustomMessageHandler("add-points", function(x) {
-    console.log("received add points in 2d mode");
     var widget = HTMLWidgets.find(`#${x.id}`);
     var scatter = widget.s;
-    scatter.addPoints(x.data)
+    console.log(x.config);
+    scatter.addPoints(
+      x.data,
+      x.config.colour,
+      x.config.size,
+      x.config.alpha
+    );
   })
 
   Shiny.addCustomMessageHandler("add-edges", function(x) {
-    console.log("received add edges call in 2d mode");
     var widget = HTMLWidgets.find(`#${x.id}`);
     var scatter = widget.s;
-    scatter.addEdges(x.edges);
+    scatter.addEdges(x.edges, x.config.color);
+  })
+
+  Shiny.addCustomMessageHandler("highlight-points", function(x) {
+    var widget = HTMLWidgets.find(`#${x.id}`);
+    var scatter = widget.s;
+    scatter.highlightPoints(x.point_list.map(x => x - 1)); // adjusting for 0-indexing
+  })
+
+  Shiny.addCustomMessageHandler("enlarge-points", function(x) {
+    console.log(x);
+    var widget = HTMLWidgets.find(`#${x.id}`);
+    var scatter = widget.s;
+    scatter.enlargePoints(x.enlarge_point_list.map(x => x - 1), x.size); // adjusting for 0-indexing
   })
 }
