@@ -290,9 +290,11 @@ export abstract class DisplayScatter {
     );
     // create edge segment
     this.auxEdge = this.addEdgeSegments(edgesBuffer, this.auxEdgeData);
+    // reset the position attribute to avoid glitch with initialization
+    this.auxEdge.geometry.setAttribute("position", edgesBuffer);
+    this.auxEdge.geometry.getAttribute("position").needsUpdate = true;
     // render
     this.renderer.render(this.scene, this.camera);
-    this.animate();
   }
 
   public highlightPoints(point_list: Array<number>, alpha: number = null) {
@@ -535,6 +537,9 @@ export abstract class DisplayScatter {
   }
 
   private addEdgeSegments(pointsBuffer: THREE.BufferAttribute, edges: number[]): THREE.LineSegments {
+    console.log("in add edge segments")
+    console.log(pointsBuffer);
+    console.log(edges);
     const edgesGeometry = new THREE.BufferGeometry();
     const edgesMaterial = new THREE.LineBasicMaterial({
       color: 0x000000,
@@ -545,6 +550,7 @@ export abstract class DisplayScatter {
     edgesGeometry.setAttribute("position", edgesBuffer);
 
     this.edgeSegments = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+    console.log(this.edgeSegments);
     this.scene.add(this.edgeSegments);
     return(this.edgeSegments);
   }
