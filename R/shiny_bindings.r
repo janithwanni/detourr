@@ -147,6 +147,9 @@ add_edges <- function(proxy, edge_list) {
 #'
 #' @export
 highlight_points <- function(proxy, point_list, alpha = 0.3) {
+  if (length(point_list) == 1) {
+    point_list <- list(point_list)
+  }
   proxy$message$point_list <- point_list
   proxy$session$sendCustomMessage("highlight-points", proxy$message)
   return(proxy)
@@ -163,7 +166,9 @@ highlight_points <- function(proxy, point_list, alpha = 0.3) {
 #'
 #' @export
 enlarge_points <- function(proxy, point_list, size = 2) {
-  print(point_list)
+  if (length(point_list) == 1) {
+    point_list <- list(point_list)
+  }
   proxy$message$enlarge_point_list <- point_list
   proxy$message$size <- size
   proxy$session$sendCustomMessage("enlarge-points", proxy$message)

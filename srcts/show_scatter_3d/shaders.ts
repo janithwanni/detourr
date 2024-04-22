@@ -1,5 +1,5 @@
 export const VERTEX_SHADER_3D = `
-uniform float size;
+attribute float size;
 uniform float picking;
 
 attribute vec3 color;

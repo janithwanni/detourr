@@ -43,7 +43,6 @@ if(HTMLWidgets.shinyMode) {
   })
 
   Shiny.addCustomMessageHandler("enlarge-points", function(x) {
-    console.log(x);
     var widget = HTMLWidgets.find(`#${x.id}`);
     var scatter = widget.s;
     scatter.enlargePoints(x.enlarge_point_list.map(x => x - 1), x.size); // adjusting for 0-indexing
