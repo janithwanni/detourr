@@ -18,7 +18,7 @@ server <- function(input, output, session) {
   })
 
   output$detour_click_output <- renderText({
-    print(input$detour_click)
+    print(input$detourr_out_detour_click)
   })
 }
 

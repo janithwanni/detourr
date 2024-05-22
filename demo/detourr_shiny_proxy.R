@@ -33,14 +33,14 @@ server <- function(input, output, session) {
   })
 
   output$detour_click_output <- renderText({
-    input$detour_click
+    input$detourr_out_detour_click
   })
 
-  observeEvent(input$detour_click, {
-    req(!is.null(input$detour_click))
+  observeEvent(input$detourr_out_detour_click, {
+    req(!is.null(input$detourr_out_detour_click))
     data_to_send <- dataset |>
       dplyr::select(-species) |>
-      dplyr::filter(id == input$detour_click) |>
+      dplyr::filter(id == input$detourr_out_detour_click) |>
       dplyr::select(-id)
 
     box_to_send <- data_to_send |> create_fake_box()
