@@ -419,7 +419,7 @@ export abstract class DisplayScatter {
     return;
   }
 
-  private async renderValue(inputData: DisplayScatterInputData) {
+  public async renderValue(inputData: DisplayScatterInputData) {
     if (tf.getBackend() == null) {
       await tf.setBackend("wasm");
     }
