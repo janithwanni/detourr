@@ -456,7 +456,6 @@ export abstract class DisplayScatter {
           .getHex()
           .toString(16)
           .padStart(6, "0");
-      //console.log(pointColours[i].getHex());
       csv_content += row + "\n";
     });
 

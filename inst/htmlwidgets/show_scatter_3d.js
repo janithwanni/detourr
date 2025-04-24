@@ -19,7 +19,6 @@ HTMLWidgets.widget({
 if(HTMLWidgets.shinyMode) {
   // register shiny callbacks
   Shiny.addCustomMessageHandler("add-points", function(x) {
-    console.log("in add points message handler", x);
     var widget = HTMLWidgets.find(`#${x.id}`);
     try{
       var scatter = widget.s;
@@ -35,7 +34,6 @@ if(HTMLWidgets.shinyMode) {
   })
 
   Shiny.addCustomMessageHandler("add-edges", function(x) {
-    console.log("in add edges message handler", x);
     var widget = HTMLWidgets.find(`#${x.id}`);
     try{
       var scatter = widget.s;
