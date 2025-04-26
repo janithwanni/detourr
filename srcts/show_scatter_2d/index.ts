@@ -88,5 +88,10 @@ export class DisplayScatter2d extends DisplayScatter {
   protected adjustPointSizeFromZoom() {
     (this.points.material as THREE.ShaderMaterial).uniforms.zoom.value =
       this.camera.zoom;
+    // adjust point size if the zoom changes 
+    if(this.auxPoint !== undefined) {
+      (this.auxPoint.material as THREE.ShaderMaterial).uniforms.zoom.value =
+        this.camera.zoom;
+    }
   }
 }
