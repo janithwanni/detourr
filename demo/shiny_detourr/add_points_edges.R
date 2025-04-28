@@ -6,7 +6,7 @@ dataset <- tourr::flea |>
 
 create_fake_box <- function(datum) {
   # expected tibble needs to have two rows with ncols(datum) + 1 columns
-  box_dist <- rnorm(1, mean = 3)
+  box_dist <- 2 
   bounds_list <- rbind(datum + box_dist, datum - box_dist) |>
     as.list()
   do.call(tidyr::expand_grid, bounds_list)
