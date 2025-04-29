@@ -145,13 +145,17 @@ export abstract class DisplayScatter {
         if (clickId == null) {
           this.auxData = undefined;
           this.scene.remove(this.auxPoint);
-          this.auxPoint.geometry.dispose();
-          this.auxPoint = undefined;
+          if (this.auxPoint !== undefined) {
+            this.auxPoint.geometry.dispose();
+            this.auxPoint = undefined;
+          }
 
           this.auxEdgeData = undefined;
-          this.scene.remove(this.auxEdge)
-          this.auxEdge.geometry.dispose()
-          this.auxEdge = undefined;
+          if (this.auxEdge !== undefined) {
+            this.scene.remove(this.auxEdge)
+            this.auxEdge.geometry.dispose()
+            this.auxEdge = undefined;
+          }
 
           for (let i = 0; i < this.n; i++) {
             this.pointAlphas.set([this.config.alpha], i)
