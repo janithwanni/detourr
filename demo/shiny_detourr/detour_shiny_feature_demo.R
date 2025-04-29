@@ -33,15 +33,14 @@ main_ui <- function(id) {
         "Click on the play button to view the box in different projections"
       ),
       p(
-        "The points inside the box will be highlighted",
+        "A random set of points will be highlighted",
         "(By having a higher opacity than others)",
-        "The point clicked on has a bigger radius",
-        "These can be achieved by "
+        "The point clicked on has a bigger radius"
       ),
       p(
         "Click on an empty space in the dataset",
         "to remove the aesthetics completely.",
-        "Or else click on the sweep (clear) button",
+        "Or else click on the eraser (clear) button",
         "on the right handside of the controls" 
       )
     )
@@ -112,7 +111,7 @@ main_server <- function(id) {
           edge_list = cube_box$edges
         ) |>
         highlight_points(
-          point_list = sample(seq_len(nrow(dataset)))
+          point_list = sample(nrow(dataset))[1:(floor(nrow(dataset)*0.5))] # snap half of the points out
         ) |>
         enlarge_points(
           input$detourr_out_detour_click, size = 3
