@@ -19,10 +19,7 @@ HTMLWidgets.widget({
 if(HTMLWidgets.shinyMode) {
   // register shiny callbacks
   Shiny.addCustomMessageHandler("add-points", function(x) {
-<<<<<<< HEAD
     var widget = HTMLWidgets.find(`#${x.id}`);
-=======
->>>>>>> 33052de (:goal_net: Add exception handling scatter_3d)
     try{
       var widget = HTMLWidgets.find(`#${x.id}`);
       var scatter = widget.s;
@@ -38,10 +35,7 @@ if(HTMLWidgets.shinyMode) {
   })
 
   Shiny.addCustomMessageHandler("add-edges", function(x) {
-<<<<<<< HEAD
     var widget = HTMLWidgets.find(`#${x.id}`);
-=======
->>>>>>> 33052de (:goal_net: Add exception handling scatter_3d)
     try{
       var widget = HTMLWidgets.find(`#${x.id}`);
       var scatter = widget.s;
