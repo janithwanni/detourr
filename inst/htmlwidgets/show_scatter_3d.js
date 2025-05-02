@@ -21,6 +21,7 @@ if(HTMLWidgets.shinyMode) {
   Shiny.addCustomMessageHandler("add-points", function(x) {
     var widget = HTMLWidgets.find(`#${x.id}`);
     try{
+      var widget = HTMLWidgets.find(`#${x.id}`);
       var scatter = widget.s;
       scatter.addPoints(
         x.data,
@@ -36,10 +37,64 @@ if(HTMLWidgets.shinyMode) {
   Shiny.addCustomMessageHandler("add-edges", function(x) {
     var widget = HTMLWidgets.find(`#${x.id}`);
     try{
+      var widget = HTMLWidgets.find(`#${x.id}`);
       var scatter = widget.s;
       scatter.addEdges(x.edges, x.config.color);
     } catch (error) {
       console.error(`Could not find detour widget ${x.id}`)
     }
   })
+  
+  Shiny.addCustomMessageHandler("enlarge-points", function(x) {
+    try{
+      var widget = HTMLWidgets.find(`#${x.id}`);
+      var scatter = widget.s;
+      scatter.enlargePoints(x.enlarge_point_list.map(x => x - 1), x.size); // adjusting for 0-indexing
+    } catch (error) {
+      console.error(`Could not find detour widget ${x.id}`)
+    }
+    
+  })
+
+  Shiny.addCustomMessageHandler("clear-points", function(x) {
+    try{
+      var widget = HTMLWidgets.find(`#${x.id}`);
+      var scatter = widget.s;
+      scatter.clearPoints();
+    } catch (error) {
+      console.error(`Could not find detour widget ${x.id}`)
+    }
+    
+  })
+
+  Shiny.addCustomMessageHandler("clear-edges", function(x) {
+    try{
+      var widget = HTMLWidgets.find(`#${x.id}`);
+      var scatter = widget.s;
+      scatter.clearEdges();  
+    } catch (error) {
+      console.error(`Could not find detour widget ${x.id}`)
+    }
+  })
+
+  Shiny.addCustomMessageHandler("clear-highlight", function(x) {
+    try{
+      var widget = HTMLWidgets.find(`#${x.id}`);
+      var scatter = widget.s;
+      scatter.clearHighlight();
+    } catch (error) {
+      console.error(`Could not find detour widget ${x.id}`)
+    }
+  })
+
+  Shiny.addCustomMessageHandler("clear-enlarge", function(x) {
+    try {
+      var widget = HTMLWidgets.find(`#${x.id}`);
+      var scatter = widget.s;
+      scatter.clearEnlarge();
+    } catch (error) {
+      console.error(`Could not find detour widget ${x.id}`)
+    }
+  })
+
 }
