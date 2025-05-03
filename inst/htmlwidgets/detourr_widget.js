@@ -3,7 +3,7 @@ HTMLWidgets.widget({
   type: "output",
 
   factory: function (el, width, height) {
-    let dt = new detourr.Detourr(el, width, height);
+    let dt = new detourr.Detourr(el, width, height, HTMLWidgets.shinyMode);
     return {
       renderValue: function (x) {
         dt.renderValue(x);
@@ -16,100 +16,99 @@ HTMLWidgets.widget({
   },
 });
 
-if(HTMLWidgets.shinyMode) {
-  // register shiny callbacks
-  Shiny.addCustomMessageHandler("add-points", function(x) {
-    var widget = HTMLWidgets.find(`#${x.id}`);
-    try{
-      var scatter = widget.s;
-      scatter.addPoints(
-        x.data,
-        x.config.colour,
-        x.config.size,
-        x.config.alpha
-      );
-    } catch (error) {
-      console.error(`Could not find detour widget ${x.id}`)
-    }
-  })
 
-  Shiny.addCustomMessageHandler("add-edges", function(x) {
+if (HTMLWidgets.shinyMode) {
+  // register shiny callbacks
+  Shiny.addCustomMessageHandler("add-points", function (x) {
     var widget = HTMLWidgets.find(`#${x.id}`);
-    try{
+    try {
+      var scatter = widget.s;
+      scatter.addPoints(x.data, x.config.colour, x.config.size, x.config.alpha);
+    } catch (error) {
+      console.error(`Could not find detour widget ${x.id}`);
+    }
+  });
+
+  Shiny.addCustomMessageHandler("add-edges", function (x) {
+    var widget = HTMLWidgets.find(`#${x.id}`);
+    try {
       var scatter = widget.s;
       scatter.addEdges(x.edges, x.config.color);
     } catch (error) {
-      console.error(`Could not find detour widget ${x.id}`)
+      console.error(`Could not find detour widget ${x.id}`);
     }
-  })
+  });
 
-  Shiny.addCustomMessageHandler("highlight-points", function(x) {
+  Shiny.addCustomMessageHandler("highlight-points", function (x) {
     var widget = HTMLWidgets.find(`#${x.id}`);
-    try{
-    var scatter = widget.s;
-    scatter.highlightPoints(x.point_list.map(x => x - 1)); // adjusting for 0-indexing
-    } catch (error) {
-      console.error(`Could not find detour widget ${x.id}`)
-    }
-  })
-
-  Shiny.addCustomMessageHandler("enlarge-points", function(x) {
-    var widget = HTMLWidgets.find(`#${x.id}`);
-    try{
+    try {
       var scatter = widget.s;
-      scatter.enlargePoints(x.enlarge_point_list.map(x => x - 1), x.size); // adjusting for 0-indexing
+      scatter.highlightPoints(x.point_list.map((x) => x - 1)); // adjusting for 0-indexing
     } catch (error) {
-      console.error(`Could not find detour widget ${x.id}`)
+      console.error(`Could not find detour widget ${x.id}`);
     }
-  })
+  });
 
-  Shiny.addCustomMessageHandler("clear-points", function(x) {
+  Shiny.addCustomMessageHandler("enlarge-points", function (x) {
     var widget = HTMLWidgets.find(`#${x.id}`);
-    try{
+    try {
+      var scatter = widget.s;
+      scatter.enlargePoints(
+        x.enlarge_point_list.map((x) => x - 1),
+        x.size
+      ); // adjusting for 0-indexing
+    } catch (error) {
+      console.error(`Could not find detour widget ${x.id}`);
+    }
+  });
+
+  Shiny.addCustomMessageHandler("clear-points", function (x) {
+    var widget = HTMLWidgets.find(`#${x.id}`);
+    try {
       var scatter = widget.s;
       scatter.clearPoints();
     } catch (error) {
-      console.error(`Could not find detour widget ${x.id}`)
+      console.error(`Could not find detour widget ${x.id}`);
     }
-  })
+  });
 
-  Shiny.addCustomMessageHandler("clear-edges", function(x) {
+  Shiny.addCustomMessageHandler("clear-edges", function (x) {
     var widget = HTMLWidgets.find(`#${x.id}`);
-    try{
+    try {
       var scatter = widget.s;
       scatter.clearEdges();
     } catch (error) {
-      console.error(`Could not find detour widget ${x.id}`)
+      console.error(`Could not find detour widget ${x.id}`);
     }
-  })
+  });
 
-  Shiny.addCustomMessageHandler("clear-highlight", function(x) {
+  Shiny.addCustomMessageHandler("clear-highlight", function (x) {
     var widget = HTMLWidgets.find(`#${x.id}`);
-    try{
+    try {
       var scatter = widget.s;
       scatter.clearHighlight();
     } catch (error) {
-      console.error(`Could not find detour widget ${x.id}`)
+      console.error(`Could not find detour widget ${x.id}`);
     }
-  })
+  });
 
-  Shiny.addCustomMessageHandler("clear-enlarge", function(x) {
+  Shiny.addCustomMessageHandler("clear-enlarge", function (x) {
     var widget = HTMLWidgets.find(`#${x.id}`);
-    try{
+    try {
       var scatter = widget.s;
       scatter.clearEnlarge();
     } catch (error) {
-      console.error(`Could not find detour widget ${x.id}`)
+      console.error(`Could not find detour widget ${x.id}`);
     }
-  })
+  });
 
-  Shiny.addCustomMessageHandler("force-rerender", function(x) {
+  Shiny.addCustomMessageHandler("force-rerender", function (x) {
     var widget = HTMLWidgets.find(`#${x.id}`);
-    try{
+    try {
       var scatter = widget.s;
       scatter.forceRerender();
     } catch (error) {
-      console.error(`Could not find detour widget ${x.id}`)
+      console.error(`Could not find detour widget ${x.id}`);
     }
-  })
+  });
 }

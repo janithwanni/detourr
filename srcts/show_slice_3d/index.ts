@@ -12,8 +12,8 @@ export class DisplaySlice3d extends DisplayScatter3d {
   protected config: DisplaySlice3dConfig;
   private anchor: Tensor2D;
 
-  constructor(containerElement: HTMLDivElement, width: number, height: number) {
-    super(containerElement, width, height);
+  constructor(containerElement: HTMLDivElement, width: number, height: number, shinyMode: boolean) {
+    super(containerElement, width, height, shinyMode);
 
     // hide select and brush buttons
     this.selectButtonAction = null;
