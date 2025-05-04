@@ -1,5 +1,5 @@
 HTMLWidgets.widget({
-  name: "detourr_widget",
+  name: "detourr",
   type: "output",
 
   factory: function (el, width, height) {
@@ -16,16 +16,18 @@ HTMLWidgets.widget({
   },
 });
 
-
 if (HTMLWidgets.shinyMode) {
   // register shiny callbacks
   Shiny.addCustomMessageHandler("add-points", function (x) {
     var widget = HTMLWidgets.find(`#${x.id}`);
     try {
       var scatter = widget.s;
+      console.log(widget);
+      console.log(x);
       scatter.addPoints(x.data, x.config.colour, x.config.size, x.config.alpha);
     } catch (error) {
       console.error(`Could not find detour widget ${x.id}`);
+      console.error(error);
     }
   });
 
@@ -33,7 +35,7 @@ if (HTMLWidgets.shinyMode) {
     var widget = HTMLWidgets.find(`#${x.id}`);
     try {
       var scatter = widget.s;
-      scatter.addEdges(x.edges, x.config.color);
+      scatter.addEdges(x.edges);
     } catch (error) {
       console.error(`Could not find detour widget ${x.id}`);
     }

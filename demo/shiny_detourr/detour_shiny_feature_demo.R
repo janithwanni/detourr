@@ -6,7 +6,7 @@ dataset <- tourr::flea |>
 
 create_fake_box <- function(datum) {
   # expected tibble needs to have two rows with ncols(datum) + 1 columns
-  box_dist <- 2 
+  box_dist <- 2
   bounds_list <- rbind(datum + box_dist, datum - box_dist) |>
     as.list()
   do.call(tidyr::expand_grid, bounds_list)
@@ -15,13 +15,16 @@ create_fake_box <- function(datum) {
 main_ui <- function(id) {
   ns <- NS(id)
   fluidPage(
-    column(6,
-      displayScatter2dOutput(
-        ns("detourr_out"), width = "100%", height = "400px"
+    column(
+      6,
+      detourOutput(
+        ns("detourr_out"),
+        width = "100%", height = "400px"
       ),
       textOutput(ns("detour_click_output"))
     ),
-    column(6,
+    column(
+      6,
       h1(
         "Tour of aesthetic changes",
         "for points and edges added to detourr through Shiny"
@@ -41,16 +44,17 @@ main_ui <- function(id) {
         "Click on an empty space in the dataset",
         "to remove the aesthetics completely.",
         "Or else click on the eraser (clear) button",
-        "on the right handside of the controls" 
+        "on the right handside of the controls"
       )
     )
   )
 }
 
 main_server <- function(id) {
-  moduleServer(id, function(input, output, session){
-    output$detourr_out <- shinyRenderDisplayScatter2d({
-      detour(dataset,
+  moduleServer(id, function(input, output, session) {
+    output$detourr_out <- shinyRenderDetour({
+      detour(
+        dataset,
         tour_aes(projection = -c(id, species), colour = species, label = id)
       ) |>
         tour_path(grand_tour(2), fps = 60) |>
@@ -68,9 +72,9 @@ main_server <- function(id) {
       if (
         is.null(
           input$detourr_out_detour_click
-          ) || input$detourr_out_detour_click == -1
+        ) || input$detourr_out_detour_click == -1
       ) {
-        display_scatter_proxy(session$ns("detourr_out")) |>
+        detour_proxy(session$ns("detourr_out")) |>
           clear_points() |>
           clear_edges() |>
           clear_highlight() |>
@@ -89,7 +93,7 @@ main_server <- function(id) {
 
       cube_box <- geozoo::cube.iterate(p = ncol(data_to_send))
 
-      display_scatter_proxy(session$ns("detourr_out")) |>
+      detour_proxy(session$ns("detourr_out")) |>
         add_points(
           box_to_send,
           .data = dataset |> dplyr::select(-c(id, species)),
@@ -111,13 +115,13 @@ main_server <- function(id) {
           edge_list = cube_box$edges
         ) |>
         highlight_points(
-          point_list = sample(nrow(dataset))[1:(floor(nrow(dataset)*0.5))] # snap half of the points out
+          point_list = sample(nrow(dataset))[1:(floor(nrow(dataset) * 0.5))] # snap half of the points out
         ) |>
         enlarge_points(
-          input$detourr_out_detour_click, size = 3
+          input$detourr_out_detour_click,
+          size = 3
         )
     })
-
   })
 }
 

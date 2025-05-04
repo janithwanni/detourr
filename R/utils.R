@@ -128,7 +128,7 @@ make_widget <- function(x, widget_type, width, height, dependencies) {
   x$widgetType <- widget_type
 
   htmlwidgets::createWidget(
-    "detourr_widget",
+    "detourr",
     x,
     sizingPolicy = htmlwidgets::sizingPolicy(
       viewer.padding = 0,

@@ -1,4 +1,3 @@
-
 #' Shiny bindings for detourr
 #'
 #' Output and render functions for using detourr with shiny. The output
@@ -13,15 +12,15 @@
 #'
 #' @return An output or render function that enables the use of the widget
 #' within shiny applications
-#' 
+#'
 #' @name detour-shiny
 #' @export
-displayScatter3dOutput <- function(output_id,
-                                   width = "100%",
-                                   height = "400px") {
+detourOutput <- function(output_id,
+                         width = "100%",
+                         height = "400px") {
   htmltools::attachDependencies(
     shiny::tagList(
-      htmlwidgets::shinyWidgetOutput(output_id, "show_scatter_3d",
+      htmlwidgets::shinyWidgetOutput(output_id, "detourr",
         width, height,
         package = "detourr"
       )
@@ -32,56 +31,31 @@ displayScatter3dOutput <- function(output_id,
 
 #' @rdname detour-shiny
 #' @export
-displayScatter2dOutput <- function(output_id,
-                                   width = "100%",
-                                   height = "400px") {
-  htmltools::attachDependencies(
-    shiny::tagList(
-      htmlwidgets::shinyWidgetOutput(output_id, "show_scatter_2d",
-        width, height,
-        package = "detourr"
-      )
-    ),
-    crosstalk::crosstalkLibs()
-  )
-}
-
-#' @rdname detour-shiny
-#' @export
-shinyRenderDisplayScatter2d <- function(expr, env = parent.frame(), quoted = FALSE) {
+shinyRenderDetour <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) {
     expr <- substitute(expr)
   }
-  htmlwidgets::shinyRenderWidget(expr, displayScatter2dOutput, quoted = TRUE, env = env)
-}
-
-#' @rdname detour-shiny
-#' @export
-shinyRenderDisplayScatter3d <- function(expr, env = parent.frame(), quoted = FALSE) {
-  if (!quoted) {
-    expr <- substitute(expr)
-  }
-  htmlwidgets::shinyRenderWidget(expr, displayScatter3dOutput, quoted = TRUE, env = env)
+  htmlwidgets::shinyRenderWidget(expr, detourOutput, quoted = TRUE, env = env)
 }
 
 #' Send commands to a detourr instance in a Shiny app
 #'
 #' Creates a proxy object that can be used to add
 #' or remove points to a detour instance that has
-#' already being rendered using \code{\link{shinyRenderDisplayScatter3d}}.
+#' already being rendered using \code{\link{shinyRenderDetour}}.
 #' To be used in Shiny apps only.
-#' @param id output id of the detourr instance
+#' @param id output id of the detour instance
 #' @param session the Shiny session object used in the app.
 #' Default should work for most cases
 #'
 #' @rdname detour-shiny
 #' @export
-display_scatter_proxy <- function(id, session = shiny::getDefaultReactiveDomain()) { #nolint
-  structure(list(id = id, session = session), class = "detourr_proxy")
+detour_proxy <- function(id, session = shiny::getDefaultReactiveDomain()) { # nolint
+  structure(list(id = id, session = session), class = "detour_proxy")
 }
 
 #' @title Add a set of points to an existing detourr instance in Shiny
-#' @param proxy Proxy object created by \code{\link{display_scatter_proxy}}
+#' @param proxy Proxy object created by \code{\link{detour_proxy}}
 #' @param points Data.frame of points
 #' @param .data Original dataset used in creating the detourr instance
 #' @param .col_means Vector of column means of the original dataset.
@@ -95,15 +69,14 @@ display_scatter_proxy <- function(id, session = shiny::getDefaultReactiveDomain(
 #' @rdname detour-shiny
 #' @export
 add_points <- function(
-  proxy,
-  points,
-  .data = NULL,
-  .col_means = NULL,
-  .scale_factor = NULL,
-  colour = "black",
-  size =  1,
-  alpha = 1
-) {
+    proxy,
+    points,
+    .data = NULL,
+    .col_means = NULL,
+    .scale_factor = NULL,
+    colour = "black",
+    size = 1,
+    alpha = 1) {
   if (is.null(.data)) {
     if (is.null(.col_means) || is.null(.scale_factor)) {
       cli::cli_abort(c(
@@ -144,7 +117,7 @@ add_points <- function(
 
 #' @title Function to add a bunch of lines to existing shiny instance
 #'
-#' @param proxy Proxy object created by \code{\link{display_scatter_proxy}}
+#' @param proxy Proxy object created by \code{\link{detour_proxy}}
 #' @param edge_list Data.frame with two columns with the `from` node at first.
 #' The indexing of points starts with the original dataset.
 #' If \code{\link{add_points}} has been called before hand,
@@ -153,7 +126,9 @@ add_points <- function(
 #' @rdname detour-shiny
 #' @export
 add_edges <- function(proxy, edge_list) {
-  edge_list <- edge_list |> as.matrix() |> unname()
+  edge_list <- edge_list |>
+    as.matrix() |>
+    unname()
   proxy$message$edges <- apply(edge_list, 1, as.list)
   proxy$session$sendCustomMessage("add-edges", proxy$message)
   return(proxy)
@@ -164,7 +139,7 @@ add_edges <- function(proxy, edge_list) {
 #' The given points will have the original opacity while the other points
 #' will have reduced opacity
 #'
-#' @param proxy proxy object created by \code{\link{display_scatter_proxy}}
+#' @param proxy proxy object created by \code{\link{detour_proxy}}
 #' @param point_list Numeric vector. indexes to highlight in the prinary dataset
 #' @param alpha The transparency value of the points outside of the point_list
 #' @rdname detour-shiny
@@ -183,7 +158,7 @@ highlight_points <- function(proxy, point_list, alpha = 0.3) {
 #' The given points will have a larger size while the rest
 #' remains the same
 #'
-#' @param proxy proxy object created by \code{\link{display_scatter_proxy}}
+#' @param proxy proxy object created by \code{\link{detour_proxy}}
 #' @param point_list Numeric vector. indexes to enlarge in the prinary dataset
 #' @param size the size of the points to be enlarged
 #' @rdname detour-shiny
@@ -200,7 +175,7 @@ enlarge_points <- function(proxy, point_list, size = 2) {
 
 
 #' Function to clear added points
-#' @param proxy proxy object created by \code{\link{display_scatter_proxy}}
+#' @param proxy proxy object created by \code{\link{detour_proxy}}
 #' @rdname detour-shiny
 #' @export
 clear_points <- function(proxy) {
@@ -209,7 +184,7 @@ clear_points <- function(proxy) {
 }
 
 #' Function to clear added edges
-#' @param proxy proxy object created by \code{\link{display_scatter_proxy}}
+#' @param proxy proxy object created by \code{\link{detour_proxy}}
 #' @rdname detour-shiny
 #' @export
 clear_edges <- function(proxy) {
@@ -218,7 +193,7 @@ clear_edges <- function(proxy) {
 }
 
 #' Function to clear highlighted points
-#' @param proxy proxy object created by \code{\link{display_scatter_proxy}}
+#' @param proxy proxy object created by \code{\link{detour_proxy}}
 #' @rdname detour-shiny
 #' @export
 clear_highlight <- function(proxy) {
@@ -227,7 +202,7 @@ clear_highlight <- function(proxy) {
 }
 
 #' Function to clear enlarged points
-#' @param proxy proxy object created by \code{\link{display_scatter_proxy}}
+#' @param proxy proxy object created by \code{\link{detour_proxy}}
 #' @rdname detour-shiny
 #' @export
 clear_enlarge <- function(proxy) {
@@ -238,7 +213,7 @@ clear_enlarge <- function(proxy) {
 #' Function to force rerender of detourr
 #'
 #' Useful when detourr will not update unless put on focus
-#' @param proxy proxy object created by \code{\link{display_scatter_proxy}}
+#' @param proxy proxy object created by \code{\link{detour_proxy}}
 #' @rdname detour-shiny
 #' @export
 force_rerender <- function(proxy) {
