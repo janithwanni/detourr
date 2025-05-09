@@ -22,12 +22,26 @@ main_ui <- function(id) {
       textOutput(ns("detour_click_output"))
     ),
     column(6,
-      h1("Adding points and edges to detourr through Shiny"),
+      h1(
+        "Tour of aesthetic changes",
+        "for points and edges added to detourr through Shiny"
+      ),
       p(
         "In this demonstration,",
         "clicking on points on the detourr instance to the left",
         "adds a box around the point.",
         "Click on the play button to view the box in different projections"
+      ),
+      p(
+        "A random set of points will be highlighted",
+        "(By having a higher opacity than others)",
+        "The point clicked on has a bigger radius"
+      ),
+      p(
+        "Click on an empty space in the dataset",
+        "to remove the aesthetics completely.",
+        "Or else click on the eraser (clear) button",
+        "on the right handside of the controls" 
       )
     )
   )
@@ -51,6 +65,17 @@ main_server <- function(id) {
     })
 
     observeEvent(input$detourr_out_detour_click, {
+      if (
+        is.null(
+          input$detourr_out_detour_click
+          ) || input$detourr_out_detour_click == -1
+      ) {
+        display_scatter_proxy(session$ns("detourr_out")) |>
+          clear_points() |>
+          clear_edges() |>
+          clear_highlight() |>
+          clear_enlarge()
+      }
       req(
         !is.null(input$detourr_out_detour_click),
         input$detourr_out_detour_click != -1
@@ -67,10 +92,29 @@ main_server <- function(id) {
       display_scatter_proxy(session$ns("detourr_out")) |>
         add_points(
           box_to_send,
-          .data = dataset |> dplyr::select(-c(id, species))
+          .data = dataset |> dplyr::select(-c(id, species)),
+          colour = sample(
+            c(
+              "#d62b4d",
+              "#01a760",
+              "#9a0582",
+              "#626300",
+              "#ff9d4a"
+            ),
+            nrow(box_to_send),
+            replace = TRUE
+          ),
+          size = 1,
+          alpha = 0.6
         ) |>
         add_edges(
           edge_list = cube_box$edges
+        ) |>
+        highlight_points(
+          point_list = sample(nrow(dataset))[1:(floor(nrow(dataset)*0.5))] # snap half of the points out
+        ) |>
+        enlarge_points(
+          input$detourr_out_detour_click, size = 3
         )
     })
 
