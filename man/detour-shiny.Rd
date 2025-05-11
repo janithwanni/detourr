@@ -2,11 +2,9 @@
 % Please edit documentation in R/shiny_bindings.r
 \name{detour-shiny}
 \alias{detour-shiny}
-\alias{displayScatter3dOutput}
-\alias{displayScatter2dOutput}
-\alias{shinyRenderDisplayScatter2d}
-\alias{shinyRenderDisplayScatter3d}
-\alias{display_scatter_proxy}
+\alias{detourOutput}
+\alias{shinyRenderDetour}
+\alias{detour_proxy}
 \alias{add_points}
 \alias{add_edges}
 \alias{highlight_points}
@@ -18,15 +16,11 @@
 \alias{force_rerender}
 \title{Shiny bindings for detourr}
 \usage{
-displayScatter3dOutput(output_id, width = "100\%", height = "400px")
+detourOutput(output_id, width = "100\%", height = "400px")
 
-displayScatter2dOutput(output_id, width = "100\%", height = "400px")
+shinyRenderDetour(expr, env = parent.frame(), quoted = FALSE)
 
-shinyRenderDisplayScatter2d(expr, env = parent.frame(), quoted = FALSE)
-
-shinyRenderDisplayScatter3d(expr, env = parent.frame(), quoted = FALSE)
-
-display_scatter_proxy(id, session = shiny::getDefaultReactiveDomain())
+detour_proxy(id, session = shiny::getDefaultReactiveDomain())
 
 add_points(
   proxy,
@@ -69,12 +63,12 @@ string and have \code{"px"} appended.}
 \item{quoted}{Is \code{expr} a quoted expression (with \code{quote()})? This
 is useful if you want to save an expression in a variable.}
 
-\item{id}{output id of the detourr instance}
+\item{id}{output id of the detour instance}
 
 \item{session}{the Shiny session object used in the app.
 Default should work for most cases}
 
-\item{proxy}{proxy object created by \code{\link{display_scatter_proxy}}}
+\item{proxy}{proxy object created by \code{\link{detour_proxy}}}
 
 \item{points}{Data.frame of points}
 
@@ -114,7 +108,7 @@ or it will lead to strange behavour.
 
 Creates a proxy object that can be used to add
 or remove points to a detour instance that has
-already being rendered using \code{\link{shinyRenderDisplayScatter3d}}.
+already being rendered using \code{\link{shinyRenderDetour}}.
 To be used in Shiny apps only.
 
 The given points will have the original opacity while the other points

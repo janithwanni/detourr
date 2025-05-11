@@ -9,8 +9,8 @@ import * as tf from "@tensorflow/tfjs-core";
 export class DisplayScatter2d extends DisplayScatter {
   public camera: THREE.OrthographicCamera;
 
-  constructor(containerElement: HTMLDivElement, width: number, height: number) {
-    super(containerElement, width, height);
+  constructor(containerElement: HTMLDivElement, width: number, height: number, shinyMode: boolean) {
+    super(containerElement, width, height, shinyMode);
   }
 
   protected addCamera() {
@@ -88,7 +88,7 @@ export class DisplayScatter2d extends DisplayScatter {
     (this.points.material as THREE.ShaderMaterial).uniforms.zoom.value =
       this.camera.zoom;
     // adjust point size if the zoom changes 
-    if(this.auxPoint !== undefined) {
+    if (this.auxPoint !== undefined) {
       (this.auxPoint.material as THREE.ShaderMaterial).uniforms.zoom.value =
         this.camera.zoom;
     }

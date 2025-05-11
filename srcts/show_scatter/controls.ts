@@ -18,6 +18,7 @@ interface ScatterControlableWidget {
   brushButtonAction?(): void;
   exportButtonAction?(): void;
   clearButtonAction?(): void;
+  shinyMode: boolean;
 }
 
 export class ScatterControls {
@@ -87,7 +88,7 @@ export class ScatterControls {
         )
       : null;
 
-    this.clearButton = this.widget.clearButtonAction
+    this.clearButton = this.widget.shinyMode
       ? this.createButton(
           "clearButton",
           "Clear additional points and edges",

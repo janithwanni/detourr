@@ -4,14 +4,16 @@ library(detourr)
 ui <- function() {
   fluidPage(
     fluidRow(
-      column(6,
-        displayScatter3dOutput(
+      column(
+        6,
+        detourOutput(
           "detourr_out",
           width = "100%",
           height = "400px"
         )
       ),
-      column(6,
+      column(
+        6,
         h1("Click events through shiny"),
         p(
           "This app demonstrates how to obtain click events through Shiny.",
@@ -26,7 +28,7 @@ ui <- function() {
 }
 
 server <- function(input, output, session) {
-  output$detourr_out <- shinyRenderDisplayScatter2d({
+  output$detourr_out <- shinyRenderDetour({
     detour(
       tourr::flea |>
         dplyr::mutate(id = dplyr::row_number()),

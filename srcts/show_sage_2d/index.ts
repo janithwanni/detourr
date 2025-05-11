@@ -12,8 +12,8 @@ export class DisplaySage2d extends DisplayScatter2d {
   public camera: THREE.OrthographicCamera;
   protected config: DisplaySage2dConfig;
 
-  constructor(containerElement: HTMLDivElement, width: number, height: number) {
-    super(containerElement, width, height);
+  constructor(containerElement: HTMLDivElement, width: number, height: number, shinyMode: boolean) {
+    super(containerElement, width, height, shinyMode);
   }
 
   private cumulative_radial_2d(r: number, R: number, p: number) {

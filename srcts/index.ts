@@ -1,0 +1,139 @@
+import { DisplaySage2d } from "./show_sage_2d";
+import { DisplaySage3d } from "./show_sage_3d";
+import { DisplayScatter2d } from "./show_scatter_2d";
+import { DisplayScatter3d } from "./show_scatter_3d";
+import { DisplaySlice2d } from "./show_slice_2d";
+import { DisplaySlice3d } from "./show_slice_3d";
+import { DisplayScatterInputData } from "./show_scatter/show_scatter";
+
+interface DetourrInputData extends DisplayScatterInputData {
+  widgetType: string;
+}
+
+export class Detourr {
+  private inner?:
+    | DisplaySage2d
+    | DisplaySage3d
+    | DisplayScatter2d
+    | DisplayScatter3d
+    | DisplaySlice2d
+    | DisplaySlice3d;
+
+  private width: number;
+  private height: number;
+  private el: HTMLDivElement;
+  private shinyMode: boolean;
+
+  constructor(
+    el: HTMLDivElement,
+    width: number,
+    height: number,
+    shinyMode: boolean
+  ) {
+    this.el = el;
+    this.width = width;
+    this.height = height;
+    this.shinyMode = shinyMode;
+  }
+
+  public renderValue(inputData: DetourrInputData) {
+    switch (inputData.widgetType) {
+      case "DisplaySage2d":
+        this.inner = new DisplaySage2d(
+          this.el,
+          this.width,
+          this.height,
+          this.shinyMode
+        );
+        break;
+      case "DisplaySage3d":
+        this.inner = new DisplaySage3d(
+          this.el,
+          this.width,
+          this.height,
+          this.shinyMode
+        );
+        break;
+      case "DisplayScatter2d":
+        this.inner = new DisplayScatter2d(
+          this.el,
+          this.width,
+          this.height,
+          this.shinyMode
+        );
+        break;
+      case "DisplayScatter3d":
+        this.inner = new DisplayScatter3d(
+          this.el,
+          this.width,
+          this.height,
+          this.shinyMode
+        );
+        break;
+      case "DisplaySlice2d":
+        this.inner = new DisplaySlice2d(
+          this.el,
+          this.width,
+          this.height,
+          this.shinyMode
+        );
+        break;
+      case "DisplaySlice3d":
+        this.inner = new DisplaySlice3d(
+          this.el,
+          this.width,
+          this.height,
+          this.shinyMode
+        );
+        break;
+      default:
+        console.error(`Widget type ${inputData.widgetType} is not available`);
+    }
+    this.inner.renderValue(inputData);
+  }
+
+  public resize(width: number, height: number) {
+    this.inner.resize(width, height);
+  }
+
+  public addPoints(
+    data: Array<Array<number>>,
+    colour: string | Array<string> = "black",
+    size: number = null,
+    alpha: number
+  ) {
+    this.inner.addPoints(data, colour, size, alpha);
+  }
+
+  public addEdges(data: Array<Array<number>>) {
+    this.inner.addEdges(data);
+  }
+
+  public highlightPoints(point_list: Array<number>, alpha: number = null) {
+    this.inner.highlightPoints(point_list, alpha);
+  }
+
+  public enlargePoints(point_list: Array<number>, size: number = null) {
+    this.inner.enlargePoints(point_list, size);
+  }
+
+  public clearPoints() {
+    this.inner.clearPoints();
+  }
+
+  public clearEdges() {
+    this.inner.clearEdges();
+  }
+
+  public clearHighlight() {
+    this.inner.clearHighlight();
+  }
+
+  public clearEnlarge() {
+    this.inner.clearEnlarge();
+  }
+
+  public forceRerender() {
+    this.inner.clearEnlarge();
+  }
+}

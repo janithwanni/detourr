@@ -12,8 +12,8 @@ export class DisplaySage3d extends DisplayScatter3d {
   public camera: THREE.PerspectiveCamera;
   protected config: DisplaySage3dConfig;
 
-  constructor(containerElement: HTMLDivElement, width: number, height: number) {
-    super(containerElement, width, height);
+  constructor(containerElement: HTMLDivElement, width: number, height: number, shinyMode: boolean) {
+    super(containerElement, width, height, shinyMode);
   }
 
   private cumulative_radial_3d(r: number, R: number, p: number) {
@@ -29,8 +29,8 @@ export class DisplaySage3d extends DisplayScatter3d {
     for (let i = 0; i < projectedArray.length / 3; i++) {
       r = Math.sqrt(
         projectedArray[i * 3] ** 2 +
-          projectedArray[i * 3 + 1] ** 2 +
-          projectedArray[i * 3 + 2] ** 2
+        projectedArray[i * 3 + 1] ** 2 +
+        projectedArray[i * 3 + 2] ** 2
       );
       r_trim = Math.min(this.config.R, r);
 

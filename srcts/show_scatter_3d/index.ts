@@ -9,8 +9,8 @@ import * as tf from "@tensorflow/tfjs-core";
 export class DisplayScatter3d extends DisplayScatter {
   public camera: THREE.PerspectiveCamera;
 
-  constructor(containerElement: HTMLDivElement, width: number, height: number) {
-    super(containerElement, width, height);
+  constructor(containerElement: HTMLDivElement, width: number, height: number, shinyMode: boolean) {
+    super(containerElement, width, height, shinyMode);
   }
 
   protected addCamera() {
