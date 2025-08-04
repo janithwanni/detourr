@@ -165,11 +165,6 @@ export abstract class DisplayScatter {
             this.auxEdge = undefined;
           }
 
-          for (let i = 0; i < this.n; i++) {
-            this.pointAlphas.set([this.config.alpha], i);
-          }
-          this.pointAlphas.needsUpdate = true;
-          this.points.geometry.getAttribute("alpha").needsUpdate = true;
           this.renderer.render(this.scene, this.camera);
           this.animate();
         }
