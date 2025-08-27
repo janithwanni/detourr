@@ -46,7 +46,9 @@ main_server <- function(id) {
         tour_path(grand_tour(2), fps = 60) |>
         show_scatter(
           alpha = 0.7,
-          axes = TRUE
+          axes = TRUE,
+          edge_colour = "forestgreen",
+          edge_width = 0.5
         )
     })
 

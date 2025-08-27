@@ -7,6 +7,9 @@ import { SelectionHelper } from "./selection_helper";
 import { AxisLabel } from "./axis_label";
 import { ScatterControls } from "./controls";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2'
+import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
+import { LineSegmentsGeometry } from "three/examples/jsm/lines/LineSegmentsGeometry";
 import "./style.css";
 import Shiny from "shiny";
 
@@ -32,6 +35,8 @@ export interface DisplayScatterConfig {
   axes: boolean;
   edges: Matrix;
   alpha: number;
+  edgeColour: number;
+  edgeWidth: number;
   backgroundColour: string;
   paused: boolean;
   basisIndices: number[];
@@ -66,7 +71,7 @@ export abstract class DisplayScatter {
   protected auxPoint: THREE.Points;
   protected auxData: tf.Tensor2D;
   protected auxEdgeData: number[];
-  protected auxEdge: THREE.LineSegments;
+  protected auxEdge: LineSegments2;
   protected auxEdgeBuffer: THREE.BufferGeometry;
   protected highlightedPoints: Array<number> = null;
 
@@ -102,7 +107,7 @@ export abstract class DisplayScatter {
   private hasPointLabels: boolean;
   private hasEdges = false;
   private edges: number[];
-  private edgeSegments: THREE.LineSegments;
+  private edgeSegments: LineSegments2;
   private toolTip: HTMLDivElement;
   private timeline: Timeline;
   private controls: ScatterControls;
@@ -188,7 +193,7 @@ export abstract class DisplayScatter {
     }
 
     if (this.hasEdges) {
-      this.addEdgeSegments(this.currentFrameBuffer, this.edges);
+      this.edgeSegments = this.createEdgeSegments(this.currentFrameBuffer, this.edges);
     }
 
     this.addOrbitControls();
@@ -297,15 +302,16 @@ export abstract class DisplayScatter {
     }
     this.auxEdgeData = data.flat();
     // get position attribute
-    const edgesBuffer = this.getEdgesBuffer(
+    const edgesArray = this.getEdgesArray(
+      // todo! check this
       this.auxPoint.geometry.getAttribute("position") as THREE.BufferAttribute,
       this.auxEdgeData,
     );
     // create edge segment
-    this.auxEdge = this.addEdgeSegments(edgesBuffer, this.auxEdgeData);
+    this.auxEdge = this.createEdgeSegments(this.currentFrameBuffer, this.auxEdgeData, true);
 
     // reset the position attribute to avoid glitch with initialization
-    this.auxEdge.geometry.setAttribute("position", edgesBuffer);
+    this.auxEdge.geometry.setPositions(edgesArray);
     this.auxEdge.geometry.getAttribute("position").needsUpdate = true;
 
     // render
@@ -604,22 +610,28 @@ export abstract class DisplayScatter {
     this.scene.add(this.axisSegments);
   }
 
-  private addEdgeSegments(
+  private createEdgeSegments(
     pointsBuffer: THREE.BufferAttribute,
     edges: number[],
-  ): THREE.LineSegments {
-    const edgesGeometry = new THREE.BufferGeometry();
-    const edgesMaterial = new THREE.LineBasicMaterial({
-      color: 0x000000,
-      linewidth: 1,
+    isAuxiliary: boolean = false,
+  ): LineSegments2 {
+    const edgesGeometry = new LineSegmentsGeometry();
+    const edgesMaterial = new LineMaterial({
+      color: this.config.edgeColour ? this.config.edgeColour : "#000000",
+      linewidth: this.config.edgeWidth ? this.config.edgeWidth : 1,
     });
 
-    const edgesBuffer = this.getEdgesBuffer(pointsBuffer, edges);
-    edgesGeometry.setAttribute("position", edgesBuffer);
+    const edgesArray = this.getEdgesArray(pointsBuffer, edges);
+    edgesGeometry.setPositions(edgesArray);
 
-    this.edgeSegments = new THREE.LineSegments(edgesGeometry, edgesMaterial);
-    this.scene.add(this.edgeSegments);
-    return this.edgeSegments;
+    const lineSegments = new LineSegments2(edgesGeometry, edgesMaterial);
+    this.scene.add(lineSegments);
+
+    if (!isAuxiliary) {
+      this.edgeSegments = lineSegments;
+    }
+
+    return lineSegments;
   }
 
   private addContainerElement(containerElement: HTMLDivElement) {
@@ -708,24 +720,26 @@ export abstract class DisplayScatter {
     return new THREE.BufferAttribute(linesBufferArray, 3);
   }
 
-  private getEdgesBuffer(frameBuffer: THREE.BufferAttribute, edges: number[]) {
+  private getEdgesArray(frameBuffer: THREE.BufferAttribute, edges: number[]) {
     const bufferArray = new Float32Array(edges.length * 3);
-    const edgesBuffer = new THREE.BufferAttribute(bufferArray, 3);
+    // const edgesBuffer = new THREE.BufferAttribute(bufferArray, 3);
 
     // `edges` contains indices with format [from, to, from, to, ...]
     // `edgesBuffer` has format [fromX, fromY, fromZ, toX, toY, toZ, ...]
 
     for (let i = 0; i < edges.length; i++) {
-      edgesBuffer.set(
-        [
-          frameBuffer.getX(edges[i] - 1),
-          frameBuffer.getY(edges[i] - 1),
-          frameBuffer.getZ(edges[i] - 1),
-        ],
-        i * 3,
-      );
+      for (let i = 0; i < edges.length; i++) {
+        bufferArray.set(
+          [
+            frameBuffer.getX(edges[i] - 1),
+            frameBuffer.getY(edges[i] - 1),
+            frameBuffer.getZ(edges[i] - 1),
+          ],
+          i * 3,
+        );
+      }
     }
-    return edgesBuffer;
+    return bufferArray;
   }
 
   private coloursToBufferAttribute(colours: string[]): THREE.BufferAttribute {
@@ -1044,13 +1058,13 @@ export abstract class DisplayScatter {
       }
 
       if (this.auxEdgeData) {
-        const edgesBuffer = this.getEdgesBuffer(
+        const edgesBuffer = this.getEdgesArray(
           this.auxPoint.geometry.getAttribute(
             "position",
           ) as THREE.BufferAttribute,
           this.auxEdgeData,
         );
-        this.auxEdge.geometry.setAttribute("position", edgesBuffer);
+        this.auxEdge.geometry.setPositions(edgesBuffer);
         this.auxEdge.geometry.getAttribute("position").needsUpdate = true;
         this.renderer.render(this.scene, this.camera);
       }
@@ -1062,11 +1076,11 @@ export abstract class DisplayScatter {
         );
       }
       if (this.hasEdges) {
-        const edgesBuffer = this.getEdgesBuffer(
+        const edgesArray = this.getEdgesArray(
           this.currentFrameBuffer,
           this.edges,
         );
-        this.edgeSegments.geometry.setAttribute("position", edgesBuffer);
+        this.edgeSegments.geometry.setPositions(edgesArray);
       }
 
       this.oldFrame = currentFrame;

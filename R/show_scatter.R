@@ -67,6 +67,8 @@ show_scatter <- function(x,
 #' - size: point size, defaults to 1
 #' - alpha: point opacity, defaults to 1
 #' - background_colour: defaults to "white"
+#' - edge_colour: colour of edges, defaults to black
+#' - edge_width: width of edges, defaults to 1
 #' @param palette Colour palette to use with the colour aesthetic. Can be:
 #'  - A character vector of R colours. This should match the number of levels
 #' of the colour aesthetic, or the number of bins to use for continuous colours.
@@ -111,6 +113,8 @@ show_scatter_internal <- function(x,
   size <- dots[["size"]] %||% 1
   alpha <- dots[["alpha"]] %||% 1
   background_colour <- dots[["background_colour"]] %||% "white"
+  edge_colour <- dots[["edge_colour"]] %||% "black"
+  edge_width <- dots[["edge_width"]] %||% 1
 
   if (!("colour" %in% names(d$mapping))) palette <- "black"
 
@@ -146,7 +150,9 @@ show_scatter_internal <- function(x,
     axes = axes[["has_axes"]],
     alpha = alpha,
     backgroundColour = col2hex(background_colour),
-    paused = paused
+    paused = paused,
+    edgeColour = col2hex(edge_colour),
+    edgeWidth = edge_width
   ))
 
   make_detour(x, d)
