@@ -25,6 +25,8 @@ show_sage(
 \item size: point size, defaults to 1
 \item alpha: point opacity, defaults to 1
 \item background_colour: defaults to "white"
+\item edge_colour: colour of edges, defaults to black
+\item edge_width: width of edges, defaults to 1
 }}
 
 \item{palette}{Colour palette to use with the colour aesthetic. Can be:

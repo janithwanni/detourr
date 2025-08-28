@@ -22,8 +22,6 @@ if (HTMLWidgets.shinyMode) {
     var widget = HTMLWidgets.find(`#${x.id}`);
     try {
       var scatter = widget.s;
-      console.log(widget);
-      console.log(x);
       scatter.addPoints(x.data, x.config.colour, x.config.size, x.config.alpha);
     } catch (error) {
       console.error(`Could not find detour widget ${x.id}`);

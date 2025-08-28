@@ -12,7 +12,7 @@
   "devDependencies": {
     "@babel/core": "^7.14.3",
     "@babel/register": "^7.13.16",
-    "@types/three": "^0.176.0",
+    "@types/three": "^0.179.0",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "^8.32.0",
     "copy-webpack-plugin": "^13.0.0",
