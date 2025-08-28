@@ -1,16 +1,16 @@
 Package: detourr
 Type: Package
 Title: Portable and Performant Tour Animations
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
     person("Casper", "Hart", email = "casperhart93@gmail.com", role = c("aut", "cre")),
     person("Earo", "Wang", email = "earo.wang@gmail.com", role = c("aut", "ths"), comment = c(ORCID = "0000-0001-6448-5260"))
     )
-Description: Provides 2D and 3D tour animations as HTML widgets. The user can interact with the widgets using orbit controls, tooltips, brushing, and timeline controls. Linked brushing is supported using 'crosstalk', and widgets can be embedded in Shiny apps or HTML documents. 
+Description: Provides 2D and 3D tour animations as HTML widgets. The user can interact with the widgets using orbit controls, tooltips, brushing, and timeline controls. Linked brushing is supported using 'crosstalk', and widgets can be embedded in Shiny apps or HTML documents.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: 
+Imports:
     tourr,
     tibble,
     htmlwidgets,
@@ -22,7 +22,7 @@ Imports:
     cli
 RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
-Suggests: 
+Suggests:
     testthat (>= 3.0.0),
     crosstalk,
     shiny,
@@ -35,5 +35,5 @@ Suggests:
 Config/testthat/edition: 3
 URL: https://casperhart.github.io/detourr/
 BugReports: https://github.com/casperhart/detourr/issues
-Depends: 
+Depends:
     R (>= 4.1)
